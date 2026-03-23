@@ -42,3 +42,16 @@ canvas {
   background: white;
   border: none;
 }
+
+button {
+  padding: 10px;
+  border-radius: 4px;
+  border-color: black;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: #bdb6b6;
+}
