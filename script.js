@@ -57,51 +57,6 @@ canvas.addEventListener("mousemove", (e) => {
   ctx.moveTo(e.offsetX, e.offsetY);
 });
 
-function setTool(selected) {
-  tool = selected;
-}
-
-function drawShape(x, y) {
-  ctx.beginPath();
-  switch (tool) {
-    case "rectangle":
-      ctx.rect(startX, startY, x - startX, y - startY);
-      ctx.stroke();
-      break;
-    case "circle":
-      let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
-      ctx.stroke();
-      ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-      break;
-    case "triangle":
-      ctx.moveTo(startX, startY);
-      ctx.stroke();
-      ctx.lineTo(x, y);
-      ctx.lineTo(startX - (x - startX), y);
-      ctx.closePath();
-      break;
-  }
-}
-
-function saveCanvas() {
-  localStorage.setItem("canvasData", canvas.toDataURL());
-}
-
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  localStorage.removeItem("canvasData");
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-
-  if (document.body.classList.contains("dark")) {
-    localStorage.setItem("theme", "dark");
-  } else {
-    localStorage.setItem("theme", "light");
-  }
-}
-
 function getTouchPos(touchEvent) {
   const rect = canvas.getBoundingClientRect();
   return {
@@ -140,6 +95,54 @@ canvas.addEventListener("touchend", (e) => {
   saveCanvas();
 });
 
+function setTool(selected) {
+  tool = selected;
+}
+
+function drawShape(x, y) {
+  ctx.beginPath();
+  let size = document.getElementById("size").value;
+  let color1 = document.getElementById("stroke").value;
+  ctx.lineWidth = size;
+  ctx.strokeStyle = color1;
+  switch (tool) {
+    case "rectangle":
+      ctx.rect(startX, startY, x - startX, y - startY);
+      break;
+    case "circle":
+      let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
+      ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+      break;
+    case "triangle":
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+      ctx.lineTo(startX - (x - startX), y);
+      ctx.closePath();
+      break;
+  }
+      ctx.stroke();
+      savestate();
+      saveCanvas();
+}
+
+function saveCanvas() {
+  localStorage.setItem("canvasData", canvas.toDataURL());
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  localStorage.removeItem("canvasData");
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+}
 
 function addRandomImage() {
   const img = new Image();
@@ -149,7 +152,6 @@ function addRandomImage() {
   savestate();
   saveCanvas();
 }
-
 
 function undo() {
   if(historystack.length>0){
@@ -166,4 +168,3 @@ function undo() {
     else clearCanvas();
   }
 }
-
