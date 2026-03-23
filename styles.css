@@ -11,6 +11,11 @@ h3 {
     color: black;
 }
 
+body.dark {
+  background: #222;
+  color: #eee;
+}
+
 #stroke {
     width: 100%;
 }
@@ -37,16 +42,24 @@ label {
   border-right: 2px solid #333;
 }
 
-canvas {
-  flex: 1;
-  background: white;
-  border: none;
-}
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
 
-body.dark canvas {
-  flex: 1;
-  background: black;
-  border: none;
+  .toolbar {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 2px solid #333;
+    overflow-x: auto; 
+    color: brown;
+  }
+
+  canvas {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 60px); 
+  }
 }
 
 button {
@@ -60,4 +73,18 @@ button {
 button:hover {
   transform: scale(1.05);
   background: #bdb6b6;
+}
+
+
+
+canvas {
+  flex: 1;
+  background: white;
+  border: none;
+}
+
+body.dark canvas {
+  flex: 1;
+  background: black;
+  border: none;
 }

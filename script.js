@@ -63,28 +63,24 @@ function setTool(selected) {
 
 function drawShape(x, y) {
   ctx.beginPath();
-  let size = document.getElementById("size").value;
-  let color1 = document.getElementById("stroke").value;
-  ctx.lineWidth = size;
-  ctx.strokeStyle = color1;
   switch (tool) {
     case "rectangle":
       ctx.rect(startX, startY, x - startX, y - startY);
+      ctx.stroke();
       break;
     case "circle":
       let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
+      ctx.stroke();
       ctx.arc(startX, startY, radius, 0, Math.PI * 2);
       break;
     case "triangle":
       ctx.moveTo(startX, startY);
+      ctx.stroke();
       ctx.lineTo(x, y);
       ctx.lineTo(startX - (x - startX), y);
       ctx.closePath();
       break;
   }
-      ctx.stroke();
-      savestate();
-      saveCanvas();
 }
 
 function saveCanvas() {
@@ -106,6 +102,45 @@ function toggleDarkMode() {
   }
 }
 
+function getTouchPos(touchEvent) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: touchEvent.touches[0].clientX - rect.left,
+    y: touchEvent.touches[0].clientY - rect.top
+  };
+}
+
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  drawing = true;
+  const pos = getTouchPos(e);
+  startX = pos.x;
+  startY = pos.y;
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  if (!drawing || tool !== "brush") return;
+  const pos = getTouchPos(e);
+  let size = document.getElementById("size").value;
+  let color1 = document.getElementById("stroke").value;
+  ctx.lineWidth = size;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = color1;
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+});
+
+canvas.addEventListener("touchend", (e) => {
+  drawing = false;
+  ctx.beginPath();
+  savestate();
+  saveCanvas();
+});
+
+
 function addRandomImage() {
   const img = new Image();
   img.crossOrigin = "anonymous";
@@ -114,6 +149,7 @@ function addRandomImage() {
   savestate();
   saveCanvas();
 }
+
 
 function undo() {
   if(historystack.length>0){
@@ -130,3 +166,4 @@ function undo() {
     else clearCanvas();
   }
 }
+
