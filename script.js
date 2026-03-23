@@ -18,6 +18,11 @@ window.onload = () => {
     img.src = saved;
     img.onload = () => ctx.drawImage(img, 0, 0);
   }
+
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+  }
 };
 
 canvas.addEventListener("mousedown", (e) => {
@@ -81,4 +86,14 @@ function saveCanvas() {
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   localStorage.removeItem("canvasData");
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
 }
