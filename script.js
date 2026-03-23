@@ -11,6 +11,11 @@ let drawing = false;
 let tool = "brush";
 let startX, startY;
 
+let historystack=[];
+function savestate() {
+  historystack.push(canvas.toDataURL());
+}
+
 window.onload = () => {
   const saved = localStorage.getItem("canvasData");
   if (saved) {
@@ -36,6 +41,7 @@ canvas.addEventListener("mouseup", (e) => {
   if (tool !== "brush") drawShape(e.offsetX, e.offsetY);
   ctx.stroke();
   ctx.beginPath();
+  savestate();
   saveCanvas();
 });
 
@@ -77,6 +83,8 @@ function drawShape(x, y) {
       break;
   }
       ctx.stroke();
+      savestate();
+      saveCanvas();
 }
 
 function saveCanvas() {
@@ -105,4 +113,20 @@ function addRandomImage() {
   img.onload = () => ctx.drawImage(img, Math.random() * canvas.width, Math.random() * canvas.height, 100, 100);
   savestate();
   saveCanvas();
+}
+
+function undo() {
+  if(historystack.length>0){
+    historystack.pop();
+    let Data = historystack[historystack.length - 1];
+    if (Data) {
+      let img = new Image();
+      img.src = Data;
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+    }
+    else clearCanvas();
+  }
 }
