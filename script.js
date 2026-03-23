@@ -97,3 +97,12 @@ function toggleDarkMode() {
     localStorage.setItem("theme", "light");
   }
 }
+
+function addRandomImage() {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = "https://picsum.photos/200?random=" + Math.random();
+  img.onload = () => ctx.drawImage(img, Math.random() * canvas.width, Math.random() * canvas.height, 100, 100);
+  savestate();
+  saveCanvas();
+}
