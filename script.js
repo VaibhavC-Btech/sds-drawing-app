@@ -11,6 +11,15 @@ let drawing = false;
 let tool = "brush";
 let startX, startY;
 
+window.onload = () => {
+  const saved = localStorage.getItem("canvasData");
+  if (saved) {
+    const img = new Image();
+    img.src = saved;
+    img.onload = () => ctx.drawImage(img, 0, 0);
+  }
+};
+
 canvas.addEventListener("mousedown", (e) => {
   drawing = true;
   startX = e.offsetX;
@@ -22,7 +31,6 @@ canvas.addEventListener("mouseup", (e) => {
   if (tool !== "brush") drawShape(e.offsetX, e.offsetY);
   ctx.stroke();
   ctx.beginPath();
-  savestate();
   saveCanvas();
 });
 
@@ -51,11 +59,9 @@ function drawShape(x, y) {
   switch (tool) {
     case "rectangle":
       ctx.rect(startX, startY, x - startX, y - startY);
-      ctx.stroke();
       break;
     case "circle":
       let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
-      ctx.stroke();
       ctx.arc(startX, startY, radius, 0, Math.PI * 2);
       break;
     case "triangle":
@@ -63,7 +69,16 @@ function drawShape(x, y) {
       ctx.lineTo(x, y);
       ctx.lineTo(startX - (x - startX), y);
       ctx.closePath();
-      ctx.stroke();
       break;
   }
+      ctx.stroke();
+}
+
+function saveCanvas() {
+  localStorage.setItem("canvasData", canvas.toDataURL());
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  localStorage.removeItem("canvasData");
 }
