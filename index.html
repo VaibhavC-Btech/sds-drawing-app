@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atreus Drawing App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+  <div class="app">
+    <div class="toolbar">
+      <h3>SDSLabs</h3>
+      <label for="stroke">Colour:</label>
+      <input id="stroke" name="stroke" type="color">
+      <label for="size">Brush Size:</label>
+      <input id="size" name="size" type="number" value="5" min="1" max="10">
+    </div>
+    <canvas id="canvas"></canvas>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
