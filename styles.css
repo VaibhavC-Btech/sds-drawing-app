@@ -43,6 +43,12 @@ canvas {
   border: none;
 }
 
+body.dark canvas {
+  flex: 1;
+  background: black;
+  border: none;
+}
+
 button {
   padding: 10px;
   border-radius: 4px;
