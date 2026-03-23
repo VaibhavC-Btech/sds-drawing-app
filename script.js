@@ -57,6 +57,48 @@ canvas.addEventListener("mousemove", (e) => {
   ctx.moveTo(e.offsetX, e.offsetY);
 });
 
+function getTouchPos(touchEvent) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: touchEvent.touches[0].clientX - rect.left,
+    y: touchEvent.touches[0].clientY - rect.top
+  };
+}
+
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  drawing = true;
+  const pos = getTouchPos(e);
+  startX = pos.x;
+  startY = pos.y;
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  if (!drawing || tool !== "brush") return;
+  const pos = getTouchPos(e);
+  let size = document.getElementById("size").value;
+  let color1 = document.getElementById("stroke").value;
+  ctx.lineWidth = size;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = color1;
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+});
+
+canvas.addEventListener("touchend", (e) => {
+  drawing = false;
+  if (tool !== "brush") {
+    const pos = getTouchPos(e.changedTouches[0] ? { touches: [e.changedTouches[0]] } : e);
+    drawShape(pos.x, pos.y);
+  }
+  ctx.beginPath();
+  savestate();
+  saveCanvas();
+});
+
 function setTool(selected) {
   tool = selected;
 }

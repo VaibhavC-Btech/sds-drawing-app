@@ -61,3 +61,23 @@ button:hover {
   transform: scale(1.05);
   background: #bdb6b6;
 }
+
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .toolbar {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 2px solid #333;
+    overflow-x: auto; 
+    color: brown;
+  }
+
+  canvas {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 60px); 
+  }
+}
