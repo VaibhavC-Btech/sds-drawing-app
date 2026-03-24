@@ -1,158 +1,90 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-const canvasOffsetX = canvas.offsetLeft;
-const canvasOffsetY = canvas.offsetTop;
-
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
-
-let drawing = false;
-let tool = "brush";
-let startX, startY;
-
-let historystack=[];
-function savestate() {
-  historystack.push(canvas.toDataURL());
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  transition: background 0.3s ease;
 }
 
-window.onload = () => {
-  const saved = localStorage.getItem("canvasData");
-  if (saved) {
-    const img = new Image();
-    img.src = saved;
-    img.onload = () => ctx.drawImage(img, 0, 0);
-  }
-
-  const theme = localStorage.getItem("theme");
-  if (theme === "dark") {
-    document.body.classList.add("dark");
-  }
-};
-
-canvas.addEventListener("mousedown", (e) => {
-  drawing = true;
-  startX = e.offsetX;
-  startY = e.offsetY;
-});
-
-canvas.addEventListener("mouseup", (e) => {
-  drawing = false;
-  if (tool !== "brush") drawShape(e.offsetX, e.offsetY);
-  ctx.stroke();
-  ctx.beginPath();
-  savestate();
-  saveCanvas();
-});
-
-canvas.addEventListener("mousemove", (e) => {
-  if (!drawing || tool !== "brush") return;
-  let size = document.getElementById("size").value;
-  let color1 = document.getElementById("stroke").value;
-  ctx.lineWidth = size;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = color1;
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
-
-function getTouchPos(touchEvent) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: touchEvent.touches[0].clientX - rect.left,
-    y: touchEvent.touches[0].clientY - rect.top
-  };
+h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
 }
 
-canvas.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  drawing = true;
-  const pos = getTouchPos(e);
-  startX = pos.x;
-  startY = pos.y;
-});
-
-canvas.addEventListener("touchmove", (e) => {
-  e.preventDefault();
-  if (!drawing || tool !== "brush") return;
-  const pos = getTouchPos(e);
-  let size = document.getElementById("size").value;
-  let color1 = document.getElementById("stroke").value;
-  ctx.lineWidth = size;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = color1;
-  ctx.lineTo(pos.x, pos.y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(pos.x, pos.y);
-});
-
-canvas.addEventListener("touchend", (e) => {
-  drawing = false;
-  if (tool !== "brush") {
-    const pos = getTouchPos(e.changedTouches[0] ? { touches: [e.changedTouches[0]] } : e);
-    drawShape(pos.x, pos.y);
-  }
-  ctx.beginPath();
-  savestate();
-  saveCanvas();
-});
-
-function setTool(selected) {
-  tool = selected;
+#stroke {
+    width: 100%;
 }
 
-function drawShape(x, y) {
-  ctx.beginPath();
-  let size = document.getElementById("size").value;
-  let color1 = document.getElementById("stroke").value;
-  ctx.lineWidth = size;
-  ctx.strokeStyle = color1;
-  if(tool==="rectangle"){
-      ctx.rect(startX, startY, x - startX, y - startY);
-  }
-  else if(tool==="circle"){
-      let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
-      ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-  }
-  else if(tool==="triangle"){
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(x, y);
-      ctx.lineTo(startX - (x - startX), y);
-      ctx.closePath();
-  }
-      ctx.stroke();
-      savestate();
-      saveCanvas();
+label {
+    font-weight: 200;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    font-size: 15px;
 }
 
-function saveCanvas() {
-  localStorage.setItem("canvasData", canvas.toDataURL());
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  localStorage.removeItem("canvasData");
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  background: brown;
+  border-right: 2px solid #333;
 }
 
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
+canvas {
+  flex: 1;
+  background: white;
+  border: none;
+}
 
-  if (document.body.classList.contains("dark")) {
-    localStorage.setItem("theme", "dark");
-  } else {
-    localStorage.setItem("theme", "light");
+body.dark canvas {
+  flex: 1;
+  background: black;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  border-radius: 4px;
+  border-color: black;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: #bdb6b6;
+}
+
+button.active {
+  background: rgb(125, 91, 158);
+  color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
   }
-}
 
-function addRandomImage() {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = "https://picsum.photos/200?random=" + Math.random();
-  img.onload = () => ctx.drawImage(img, Math.random() * canvas.width, Math.random() * canvas.height, 100, 100);
-  savestate();
-  saveCanvas();
+  .toolbar {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 2px solid #333;
+    overflow-x: auto; 
+    color: brown;
+  }
+
+  canvas {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 60px); 
+  }
 }
 
 function undo() {
