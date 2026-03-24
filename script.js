@@ -109,20 +109,18 @@ function drawShape(x, y) {
   let color1 = document.getElementById("stroke").value;
   ctx.lineWidth = size;
   ctx.strokeStyle = color1;
-  switch (tool) {
-    case "rectangle":
+  if(tool==="rectangle"){
       ctx.rect(startX, startY, x - startX, y - startY);
-      break;
-    case "circle":
+  }
+  else if(tool==="circle"){
       let radius = Math.sqrt((x - startX) ** 2 + (y - startY) ** 2);
       ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-      break;
-    case "triangle":
+  }
+  else if(tool==="triangle"){
       ctx.moveTo(startX, startY);
       ctx.lineTo(x, y);
       ctx.lineTo(startX - (x - startX), y);
       ctx.closePath();
-      break;
   }
       ctx.stroke();
       savestate();
@@ -171,4 +169,15 @@ function undo() {
     }
     else clearCanvas();
   }
+}
+
+function toggleButton(button, selectedTool) {
+  const button1 = document.querySelectorAll("button");
+  button1.forEach(btn => {
+    btn.dataset.clicked = "false";
+    btn.classList.remove("active");
+  });
+  button.dataset.clicked = "true";
+  button.classList.add("active");
+  setTool(selectedTool);
 }
