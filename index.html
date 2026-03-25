@@ -13,8 +13,9 @@
       <h3>SDSLabs</h3>
       <label for="stroke">Colour:</label>
       <input id="stroke" name="stroke" type="color">
-      <label for="size">Brush Size:</label>
-      <input id="size" name="size" type="number" value="5" min="1" max="10">
+      <label for="size">Size:</label>
+      <input type="range" min="1" max="50" value="5" step="1" id="volumeSlider">
+      <label>Value: <span id="sliderValue">5</span></label>
       <button onclick="toggleButton(this, 'brush')">Brush</button>
       <button onclick="toggleButton(this, 'erase')">Erase</button>
       <button onclick="toggleButton(this, 'rectangle')">Rectangle</button>

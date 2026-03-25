@@ -52,9 +52,12 @@ button {
 }
 
 body.dark button {
-  flex: 1;
-  background: brown;
-  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-color: black;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+  background-color: brown;
 }
 
 body.dark h3 {
@@ -72,6 +75,11 @@ button:hover {
 
 button.active {
   background: rgb(125, 91, 158);
+  color: #f5f5f5;
+}
+
+body.dark button.active {
+  background: rgb(212, 215, 19);
   color: #f5f5f5;
 }
 
@@ -93,4 +101,8 @@ button.active {
     width: 100%;
     height: calc(100vh - 60px); 
   }
+}
+
+erase.selected {
+  cursor: pointer;
 }

@@ -1,5 +1,11 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const slider = document.getElementById("volumeSlider");
+const output = document.getElementById("sliderValue");
+
+slider.oninput = function() {
+  output.textContent = this.value;
+}
 
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
@@ -47,7 +53,7 @@ canvas.addEventListener("mouseup", (e) => {
 
 canvas.addEventListener("mousemove", (e) => {
   if (!drawing || (tool !== "brush" && tool != "erase")) return;
-  let size = document.getElementById("size").value;
+  let size = document.getElementById("volumeSlider").value;
   let color1 = document.getElementById("stroke").value;
   if(tool==="brush"){
   ctx.lineWidth = size;
@@ -83,7 +89,7 @@ canvas.addEventListener("touchmove", (e) => {
   if (!drawing || (tool !== "brush" && tool !== "erase") ) return;
   if(tool==="brush"){
   const pos = getTouchPos(e);
-  let size = document.getElementById("size").value;
+  let size = document.getElementById("volumeSlider").value;
   let color1 = document.getElementById("stroke").value;
   ctx.lineWidth = size;
   ctx.lineCap = "round";
@@ -94,7 +100,7 @@ canvas.addEventListener("touchmove", (e) => {
   ctx.moveTo(pos.x, pos.y);
   }
   else if(tool==="erase"){
-    ctx.clearRect(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
+    ctx.clearRect(pos.X-size/2, pos.Y-size/2, 2*size, 2*size);
   }
 });
 
@@ -115,7 +121,7 @@ function setTool(selected) {
 
 function drawShape(x, y) {
   ctx.beginPath();
-  let size = document.getElementById("size").value;
+  let size = document.getElementById("volumeSlider").value;
   let color1 = document.getElementById("stroke").value;
   ctx.lineWidth = size;
   ctx.strokeStyle = color1;
