@@ -58,7 +58,7 @@ canvas.addEventListener("mousemove", (e) => {
   ctx.moveTo(e.offsetX, e.offsetY);
   }
   else if(tool==="erase") {
-    ctx.cleararc(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
+    ctx.clearRect(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
   }
 });
 
@@ -80,7 +80,8 @@ canvas.addEventListener("touchstart", (e) => {
 
 canvas.addEventListener("touchmove", (e) => {
   e.preventDefault();
-  if (!drawing || tool !== "brush") return;
+  if (!drawing || (tool !== "brush" && tool !== "erase") ) return;
+  if(tool==="brush"){
   const pos = getTouchPos(e);
   let size = document.getElementById("size").value;
   let color1 = document.getElementById("stroke").value;
@@ -91,6 +92,10 @@ canvas.addEventListener("touchmove", (e) => {
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(pos.x, pos.y);
+  }
+  else if(tool==="erase"){
+    ctx.clearRect(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
+  }
 });
 
 canvas.addEventListener("touchend", (e) => {
