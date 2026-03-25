@@ -40,13 +40,7 @@ label {
 canvas {
   flex: 1;
   background: white;
-  border: none;
-}
-
-body.dark canvas {
-  flex: 1;
-  background: black;
-  border: none;
+  border: 1em;
 }
 
 button {
@@ -55,6 +49,20 @@ button {
   border-color: black;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.3s ease;
+}
+
+body.dark button {
+  flex: 1;
+  background: brown;
+  border: none;
+}
+
+body.dark h3 {
+  color: brown;
+}
+
+body.dark .toolbar{
+  background: black;
 }
 
 button:hover {
@@ -85,31 +93,4 @@ button.active {
     width: 100%;
     height: calc(100vh - 60px); 
   }
-}
-
-function undo() {
-  if(historystack.length>0){
-    historystack.pop();
-    let Data = historystack[historystack.length - 1];
-    if (Data) {
-      let img = new Image();
-      img.src = Data;
-      img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-      };
-    }
-    else clearCanvas();
-  }
-}
-
-function toggleButton(button, selectedTool) {
-  const button1 = document.querySelectorAll("button");
-  button1.forEach(btn => {
-    btn.dataset.clicked = "false";
-    btn.classList.remove("active");
-  });
-  button.dataset.clicked = "true";
-  button.classList.add("active");
-  setTool(selectedTool);
 }

@@ -38,7 +38,7 @@ canvas.addEventListener("mousedown", (e) => {
 
 canvas.addEventListener("mouseup", (e) => {
   drawing = false;
-  if (tool !== "brush") drawShape(e.offsetX, e.offsetY);
+  if (tool !== "brush" && tool !== "erase") drawShape(e.offsetX, e.offsetY);
   ctx.stroke();
   ctx.beginPath();
   savestate();
@@ -46,15 +46,20 @@ canvas.addEventListener("mouseup", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (!drawing || tool !== "brush") return;
+  if (!drawing || (tool !== "brush" && tool != "erase")) return;
   let size = document.getElementById("size").value;
   let color1 = document.getElementById("stroke").value;
+  if(tool==="brush"){
   ctx.lineWidth = size;
   ctx.lineCap = "round";
   ctx.strokeStyle = color1;
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
   ctx.moveTo(e.offsetX, e.offsetY);
+  }
+  else if(tool==="erase") {
+    ctx.cleararc(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
+  }
 });
 
 function getTouchPos(touchEvent) {
@@ -90,7 +95,7 @@ canvas.addEventListener("touchmove", (e) => {
 
 canvas.addEventListener("touchend", (e) => {
   drawing = false;
-  if (tool !== "brush") {
+  if (tool !== "brush" && tool !== "erase") {
     const pos = getTouchPos(e.changedTouches[0] ? { touches: [e.changedTouches[0]] } : e);
     drawShape(pos.x, pos.y);
   }
@@ -138,10 +143,10 @@ function clearCanvas() {
 
 function toggleDarkMode() {
   document.body.classList.toggle("dark");
-
   if (document.body.classList.contains("dark")) {
     localStorage.setItem("theme", "dark");
-  } else {
+  }
+  else {
     localStorage.setItem("theme", "light");
   }
 }

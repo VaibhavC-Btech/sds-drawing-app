@@ -16,6 +16,7 @@
       <label for="size">Brush Size:</label>
       <input id="size" name="size" type="number" value="5" min="1" max="10">
       <button onclick="toggleButton(this, 'brush')">Brush</button>
+      <button onclick="toggleButton(this, 'erase')">Erase</button>
       <button onclick="toggleButton(this, 'rectangle')">Rectangle</button>
       <button onclick="toggleButton(this, 'circle')">Circle</button>
       <button onclick="toggleButton(this, 'triangle')">Triangle</button>
@@ -23,6 +24,7 @@
       <button id="image" onclick="addRandomImage()">Add Random Image</button>
       <button onclick="clearCanvas()">Clear</button>
       <button id="Undo" onclick="undo()">Undo</button>
+
     </div>
     <canvas id="canvas"></canvas>
   </div>
