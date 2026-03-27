@@ -22,7 +22,11 @@
       <button onclick="toggleButton(this, 'circle')">Circle</button>
       <button onclick="toggleButton(this, 'triangle')">Triangle</button>
       <button id="dark" onclick="toggleDarkMode()">Dark Mode</button>
-      <button id="image" onclick="addRandomImage()">Add Random Image</button>
+      <input type="number" id="xCoord" placeholder="X">
+      <input type="number" id="yCoord" placeholder="Y">
+      <button onclick="placeImage()">Place Image</button>
+      <label for="size">Image Size:</label>
+      <input type="size" min="50" max="500" value="100" id="imageSize">
       <button onclick="clearCanvas()">Clear</button>
       <button id="Undo" onclick="undo()">Undo</button>
 

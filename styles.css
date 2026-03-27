@@ -44,7 +44,7 @@ canvas {
 }
 
 button {
-  padding: 10px;
+  padding: 6px;
   border-radius: 4px;
   border-color: black;
   cursor: pointer;
@@ -52,7 +52,7 @@ button {
 }
 
 body.dark button {
-  padding: 10px;
+  padding: 6px;
   border-radius: 4px;
   border-color: black;
   cursor: pointer;

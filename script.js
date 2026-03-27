@@ -7,11 +7,8 @@ slider.oninput = function() {
   output.textContent = this.value;
 }
 
-const canvasOffsetX = canvas.offsetLeft;
-const canvasOffsetY = canvas.offsetTop;
-
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 let drawing = false;
 let tool = "brush";
@@ -162,13 +159,27 @@ function toggleDarkMode() {
   }
 }
 
-function addRandomImage() {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = "https://picsum.photos/200?random=" + Math.random();
-  img.onload = () => ctx.drawImage(img, Math.random() * canvas.width, Math.random() * canvas.height, 100, 100);
-  savestate();
-  saveCanvas();
+let userImg = null;
+
+function placeImage() {
+  const x = parseInt(document.getElementById("xCoord").value);
+  const y = parseInt(document.getElementById("yCoord").value);
+  const size = document.getElementById("imageSize").value;
+
+  if (!userImg) {
+    userImg = new Image();
+    userImg.crossOrigin = "anonymous";
+    userImg.src = "https://picsum.photos/200?random=" + Math.random();
+    userImg.onload = () => {
+      ctx.drawImage(userImg, x, y, size, size);
+      savestate();
+      saveCanvas();
+    };
+  } else {
+    ctx.drawImage(userImg, x, y, size, size);
+    savestate();
+    saveCanvas();
+  }
 }
 
 function undo() {
