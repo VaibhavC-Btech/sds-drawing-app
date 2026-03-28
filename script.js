@@ -49,7 +49,7 @@ canvas.addEventListener("mouseup", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (!drawing || (tool !== "brush" && tool != "erase")) return;
+  if (!drawing || tool !== "brush" ) return;
   let size = document.getElementById("volumeSlider").value;
   let color1 = document.getElementById("stroke").value;
   if(tool==="brush"){
@@ -60,8 +60,20 @@ canvas.addEventListener("mousemove", (e) => {
   ctx.stroke();
   ctx.moveTo(e.offsetX, e.offsetY);
   }
-  else if(tool==="erase") {
-    ctx.clearRect(e.offsetX-size/2, e.offsetY-size/2, 2*size, 2*size);
+});
+
+canvas.addEventListener("mousemove", (e) => {
+  if(tool==="erase") {
+    let size = document.getElementById("volumeSlider").value;
+    squareCursor.style.width = size + "px";
+    squareCursor.style.height = size + "px";
+    squareCursor.style.left = (e.pageX) + "px";
+    squareCursor.style.top = (e.pageY) + "px";
+    squareCursor.style.display = "block";
+    ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
+  }
+  if(tool!=="erase"){
+    squareCursor.style.display="none";
   }
 });
 
@@ -97,7 +109,12 @@ canvas.addEventListener("touchmove", (e) => {
   ctx.moveTo(pos.x, pos.y);
   }
   else if(tool==="erase"){
-    ctx.clearRect(pos.X-size/2, pos.Y-size/2, 2*size, 2*size);
+    let size = document.getElementById("volumeSlider").value;
+    let borderColor = "black";
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
+    ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
   }
 });
 
@@ -207,4 +224,14 @@ function toggleButton(button, selectedTool) {
   button.dataset.clicked = "true";
   button.classList.add("active");
   setTool(selectedTool);
+}
+
+function setTool(selected) {
+  tool = selected;
+  if (tool === "erase") {
+    canvas.classList.add("eraser-active");
+  } else {
+    canvas.classList.remove("eraser-active");
+    squareCursor.style.display = "none";
+  }
 }

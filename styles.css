@@ -103,6 +103,13 @@ body.dark button.active {
   }
 }
 
-erase.selected {
-  cursor: pointer;
+#canvas.eraser-active {
+  cursor: none;
+}
+
+#squareCursor {
+  position: fixed;
+  border: 1px solid rgb(1, 1, 1);
+  pointer-events: none; 
+  display: none;    
 }
