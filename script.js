@@ -149,12 +149,11 @@ function setBrushStyle(style) {
 }
 
 function applyBrushStyle() {
+  let size = document.getElementById("volumeSlider").value;
   if (brushStyle === "solid") {
     ctx.setLineDash([]);
   } else if (brushStyle === "dashed") {
-    ctx.setLineDash([5, 20]); 
-  } else if (brushStyle === "dotted") {
-    ctx.setLineDash([1, 20]);
+    ctx.setLineDash([size, size*4]); 
   }
 }
 
@@ -168,6 +167,7 @@ function drawShape(x, y) {
   let color1 = document.getElementById("stroke").value;
   ctx.lineWidth = size;
   ctx.strokeStyle = color1;
+  applyBrushStyle(); 
   if(tool==="rectangle"){
       ctx.rect(startX, startY, x - startX, y - startY);
   }
@@ -263,4 +263,13 @@ function setTool(selected) {
   } else {
     canvas.classList.remove("img-active");
   }
+}
+
+function setBrushStyle(style, element) {
+  brushStyle = style;
+
+  const buttons = document.querySelectorAll(".brush-panel button");
+  buttons.forEach(btn => btn.classList.remove("active"));
+
+  element.classList.add("active");
 }
