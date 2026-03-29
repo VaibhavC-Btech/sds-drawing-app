@@ -49,16 +49,20 @@ canvas.addEventListener("mouseup", (e) => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (!drawing || tool !== "brush" ) return;
+  if (!drawing || (tool !== "brush" && tool !== "erase")) return;
   let size = document.getElementById("volumeSlider").value;
   let color1 = document.getElementById("stroke").value;
   if(tool==="brush"){
   ctx.lineWidth = size;
   ctx.lineCap = "round";
   ctx.strokeStyle = color1;
+  applyBrushStyle(); 
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
   ctx.moveTo(e.offsetX, e.offsetY);
+  }
+  else if(tool==="erase"){
+    ctx.clearRect(e.offsetX - size/2, e.offsetY-size/4, size, size);
   }
 });
 
@@ -67,10 +71,9 @@ canvas.addEventListener("mousemove", (e) => {
     let size = document.getElementById("volumeSlider").value;
     squareCursor.style.width = size + "px";
     squareCursor.style.height = size + "px";
-    squareCursor.style.left = (e.pageX) + "px";
-    squareCursor.style.top = (e.pageY) + "px";
+    squareCursor.style.left = (e.pageX-size/2) + "px";
+    squareCursor.style.top = (e.pageY-size/2) + "px";
     squareCursor.style.display = "block";
-    ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
   }
   if(tool!=="erase"){
     squareCursor.style.display="none";
@@ -103,18 +106,28 @@ canvas.addEventListener("touchmove", (e) => {
   ctx.lineWidth = size;
   ctx.lineCap = "round";
   ctx.strokeStyle = color1;
+  applyBrushStyle(); 
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(pos.x, pos.y);
   }
   else if(tool==="erase"){
+    ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 4, size, size);
+  }
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  if(tool==="erase") {
     let size = document.getElementById("volumeSlider").value;
-    let borderColor = "black";
-    ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
-    ctx.clearRect(e.offsetX - size / 2, e.offsetY - size / 2, size, size);
+    squareCursor.style.width = size + "px";
+    squareCursor.style.height = size + "px";
+    squareCursor.style.left = (e.pageX-size/2) + "px";
+    squareCursor.style.top = (e.pageY-size/2) + "px";
+    squareCursor.style.display = "block";
+  }
+  if(tool!=="erase"){
+    squareCursor.style.display="none";
   }
 });
 
@@ -128,6 +141,22 @@ canvas.addEventListener("touchend", (e) => {
   savestate();
   saveCanvas();
 });
+
+let brushStyle = "solid";
+
+function setBrushStyle(style) {
+  brushStyle = style;
+}
+
+function applyBrushStyle() {
+  if (brushStyle === "solid") {
+    ctx.setLineDash([]);
+  } else if (brushStyle === "dashed") {
+    ctx.setLineDash([5, 20]); 
+  } else if (brushStyle === "dotted") {
+    ctx.setLineDash([1, 20]);
+  }
+}
 
 function setTool(selected) {
   tool = selected;
@@ -153,8 +182,6 @@ function drawShape(x, y) {
       ctx.closePath();
   }
       ctx.stroke();
-      savestate();
-      saveCanvas();
 }
 
 function saveCanvas() {
@@ -178,42 +205,38 @@ function toggleDarkMode() {
 
 let userImg = null;
 
-function placeImage() {
-  const x = parseInt(document.getElementById("xCoord").value);
-  const y = parseInt(document.getElementById("yCoord").value);
-  const size = document.getElementById("imageSize").value;
+canvas.addEventListener("click", function(event) {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  addRandomImage(x, y);
+});
 
-  if (!userImg) {
-    userImg = new Image();
-    userImg.crossOrigin = "anonymous";
-    userImg.src = "https://picsum.photos/200?random=" + Math.random();
-    userImg.onload = () => {
-      ctx.drawImage(userImg, x, y, size, size);
-      savestate();
-      saveCanvas();
-    };
-  } else {
-    ctx.drawImage(userImg, x, y, size, size);
-    savestate();
-    saveCanvas();
+function addRandomImage(x, y) {
+  if(tool==="addRandomImage()"){
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = "https://picsum.photos/200?random=" + Math.random();
+  const Imagesize = document.getElementById("imageSize").value;
+  img.onload = () => ctx.drawImage(img, x - Imagesize/2, y - Imagesize/2, Imagesize, Imagesize);
   }
 }
 
 function undo() {
-  if(historystack.length>0){
+  if (historystack.length > 1) {
     historystack.pop();
     let Data = historystack[historystack.length - 1];
-    if (Data) {
-      let img = new Image();
-      img.src = Data;
-      img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-      };
-    }
-    else clearCanvas();
+    let img = new Image();
+    img.src = Data;
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    };
+  } else {
+    clearCanvas();
   }
 }
+
 
 function toggleButton(button, selectedTool) {
   const button1 = document.querySelectorAll("button");
@@ -233,5 +256,11 @@ function setTool(selected) {
   } else {
     canvas.classList.remove("eraser-active");
     squareCursor.style.display = "none";
+  }
+
+  if (tool === "addRandomImage()") {
+    canvas.classList.add("img-active");
+  } else {
+    canvas.classList.remove("img-active");
   }
 }

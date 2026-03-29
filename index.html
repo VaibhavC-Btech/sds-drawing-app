@@ -23,9 +23,7 @@
       <button onclick="toggleButton(this, 'circle')">Circle</button>
       <button onclick="toggleButton(this, 'triangle')">Triangle</button>
       <button id="dark" onclick="toggleDarkMode()">Dark Mode</button>
-      <input type="number" id="xCoord" placeholder="X">
-      <input type="number" id="yCoord" placeholder="Y">
-      <button onclick="placeImage()">Place Image</button>
+      <button title='left click at the position you want the image to be in canvas' onclick="toggleButton(this, 'addRandomImage()')">Place Image</button>
       <label for="size">Image Size:</label>
       <input type="size" min="50" max="500" value="100" id="imageSize">
       <button onclick="clearCanvas()">Clear</button>
@@ -33,6 +31,12 @@
 
     </div>
     <canvas id="canvas"></canvas>
+    <div class="brush-panel">
+    <h3>Brush Styles</h3>
+    <button onclick="setBrushStyle('solid')">Solid</button>
+    <button onclick="setBrushStyle('dashed')">Dashed</button>
+    <button onclick="setBrushStyle('dotted')">Dotted</button>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
